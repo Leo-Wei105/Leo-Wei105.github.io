@@ -1,8 +1,8 @@
 #bag{
-	width:200px;
-	height: 500px;
+	width:25%;
+	height: 400px;
 	background: url(../img/bag.png) center no-repeat;
-	margin: 0 auto;
+	margin: 20px auto;
 	background-size: 60%;
 }
 #bag.burst{
@@ -12,7 +12,7 @@
 
 
 #bag-health{
-	width: 200px;
+	width: 20%;
 	border: 2px solid black;
 	margin: 0 auto 20px auto;
 }
@@ -23,7 +23,7 @@
 }
 
 #controls{
-	width: 200px;
+	width: 20%;
 	margin: 0 auto;
 	
 }
@@ -33,7 +33,7 @@
 	width: 80%;
 	margin-left: 10%;
 	margin-bottom: 20px;
-	height: 60px;
+	height: auto;
 	color: #fff;
 	background: gray;
 	border: 1px solid #fff;
