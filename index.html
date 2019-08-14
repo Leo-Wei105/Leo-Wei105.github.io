@@ -11,7 +11,7 @@
 	<body>
 		<div id="vue-app">
 			<!--图片-->
-			<div id="bag" v-bind:class="{burst:ended}">
+			<div id="bag" v-bind:class="{burst:ended}" v-on:click="punch">
 			</div>
 			<!--进度条-->
 			<div id="bag-health">
