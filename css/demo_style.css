@@ -1,25 +1,24 @@
 #bag{
+	background-size:contain|cover;
 	width:25%;
-	height: 400px;
+	height:500px;
 	background: url(../img/bag.png) center no-repeat;
-	margin: 20px auto;
-	background-size: 60%;
+	margin: 0 auto;
 }
 #bag.burst{
 	background: url(../img/bag-burst.png) center no-repeat;
-	background-size: 60%;
 }
 
 
 #bag-health{
 	width: 20%;
 	border: 2px solid black;
-	margin: 0 auto 20px auto;
+	margin: 40px auto;
 }
 
 #bag-health div{
 	background: red;
-	height: 20px;
+	height: 30px;
 }
 
 #controls{
@@ -29,9 +28,9 @@
 }
 
 #controls button{
-	font-size: 20px;
-	width: 80%;
-	margin-left: 10%;
+	font-size: 30px;
+	width: 60%;
+	margin-left: 20%;
 	margin-bottom: 20px;
 	height: auto;
 	color: #fff;
