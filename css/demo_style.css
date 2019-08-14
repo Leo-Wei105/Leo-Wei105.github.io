@@ -29,6 +29,7 @@
 }
 
 #controls button{
+	width:60px;
 	margin-left: 20px;
 	color: #fff;
 	background: gray;
