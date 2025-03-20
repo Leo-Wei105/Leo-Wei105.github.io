@@ -21,103 +21,9 @@
     <title>DevNav - 程序员专属导航站</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
     <!-- Alpine.js -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.2/cdn.min.js"></script>
-    <style>
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .bg-pattern {
-            background-color: #f9fafb;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23cbd5e0' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-
-        .dark .bg-pattern {
-            background-color: #1a202c;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%234a5568' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-
-        /* 暗色模式过渡效果 */
-        .dark * {
-            transition-property: color, background-color, border-color;
-            transition-duration: 200ms;
-            transition-timing-function: ease-in-out;
-        }
-
-        /* 自定义滚动条样式 */
-        .dark ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .dark ::-webkit-scrollbar-track {
-            background: #1a202c;
-        }
-
-        .dark ::-webkit-scrollbar-thumb {
-            background: #4a5568;
-            border-radius: 4px;
-        }
-
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: #718096;
-        }
-
-        /* 选中文本的样式 */
-        .dark ::selection {
-            background: #4a5568;
-            color: #fff;
-        }
-
-        .dark body {
-            background-color: #111827;
-            color: #e5e7eb;
-        }
-
-        .dark .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .dark .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .dark .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .dark img {
-                filter: brightness(.8) contrast(1.2);
-            }
-        }
-
-        .drawer-transition {
-            transition-property: transform, opacity;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 300ms;
-        }
-
-        .drawer-enter {
-            transform: translateX(100%);
-        }
-
-        .drawer-enter-active {
-            transform: translateX(0);
-        }
-
-        .drawer-leave {
-            transform: translateX(0);
-        }
-
-        .drawer-leave-active {
-            transform: translateX(100%);
-        }
-    </style>
 </head>
 
 <body x-data="mainData()" x-init="init()" class="bg-pattern transition-colors duration-300">
@@ -896,674 +802,98 @@
         </footer>
     </div>
 
-    <!-- IndexDB 数据库管理 -->
-    <script>
-        // IndexDB 数据库管理
-        const dbName = 'devNavDB';
-        const dbVersion = 1;
-        let db;
-
-        // 初始化数据库
-        const initDB = () => {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(dbName, dbVersion);
-
-                request.onerror = () => reject('数据库打开失败');
-                request.onsuccess = (event) => {
-                    db = event.target.result;
-                    resolve(db);
-                };
-
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('cards')) {
-                        const cardsStore = db.createObjectStore('cards', { keyPath: 'id', autoIncrement: true });
-                        cardsStore.createIndex('categories', 'categories', { unique: false, multiEntry: true });
-                        cardsStore.createIndex('isFavorite', 'isFavorite', { unique: false });
-                        cardsStore.createIndex('title', 'title', { unique: false });
-
-                        cardsStore.transaction.oncomplete = () => {
-                            const transaction = db.transaction(['cards'], 'readwrite');
-                            const objectStore = transaction.objectStore('cards');
-
-                            initialCards.forEach(card => {
-                                const cardToAdd = {
-                                    ...card,
-                                    id: Date.now() + Math.random(),
-                                    createTime: new Date().toISOString(),
-                                    updateTime: new Date().toISOString()
-                                };
-                                objectStore.add(cardToAdd);
-                            });
-                        };
-                    }
-                };
-            });
-        };
-
-        // 初始卡片数据
-        const initialCards = [
-            {
-                title: 'MDN Web Docs',
-                description: 'Web 技术权威文档，包含 HTML、CSS、JavaScript 详细参考',
-                icon: 'fas fa-book',
-                iconBg: 'bg-green-100',
-                iconColor: 'text-green-600',
-                categories: ['docs', 'frontend'],
-                tags: ['文档', '前端', 'Web'],
-                url: 'https://developer.mozilla.org',
-                isFavorite: false,
-                createTime: new Date().toISOString(),
-                updateTime: new Date().toISOString()
-            },
-            {
-                title: 'GitHub',
-                description: '全球最大的代码托管平台',
-                icon: 'fab fa-github',
-                iconBg: 'bg-gray-100',
-                iconColor: 'text-gray-600',
-                categories: ['tools', 'devops'],
-                tags: ['代码托管', '开源', '版本控制'],
-                url: 'https://github.com',
-                isFavorite: false,
-                createTime: new Date().toISOString(),
-                updateTime: new Date().toISOString()
-            },
-            {
-                title: 'Stack Overflow',
-                description: '最受欢迎的程序员问答社区',
-                icon: 'fab fa-stack-overflow',
-                iconBg: 'bg-orange-100',
-                iconColor: 'text-orange-600',
-                categories: ['community', 'learn'],
-                tags: ['问答', '社区', '编程'],
-                url: 'https://stackoverflow.com',
-                isFavorite: false,
-                createTime: new Date().toISOString(),
-                updateTime: new Date().toISOString()
-            },
-            {
-                title: 'VS Code',
-                description: '微软出品的强大代码编辑器',
-                icon: 'fas fa-code',
-                iconBg: 'bg-blue-100',
-                iconColor: 'text-blue-600',
-                categories: ['tools', 'frontend', 'backend'],
-                tags: ['编辑器', 'IDE', '开发工具'],
-                url: 'https://code.visualstudio.com',
-                isFavorite: false,
-                createTime: new Date().toISOString(),
-                updateTime: new Date().toISOString()
-            }
-        ];
-
-        // Alpine.js 数据和方法
-        function mainData() {
-            return {
-                cards: [],
-                selectedCard: null,
-                currentCategory: 'all',
-                searchQuery: '',
-                drawerSearchQuery: '',
-                showEditModal: false,
-                showAddModal: false,
-                showSearchModal: false,
-                searchResults: [],
-
-                editingCard: {
-                    id: null,
-                    title: '',
-                    description: '',
-                    url: '',
-                    categories: [],
-                    icon: 'fas fa-link',
-                    iconBg: 'bg-blue-100',
-                    iconColor: 'text-blue-600',
-                    customIcon: '',
-                    customIconColor: '',
-                    tags: ['未分类'],
-                    tagsInput: '未分类',
-                    isFavorite: false,
-                    createTime: null,
-                    updateTime: null
-                },
-                newCard: {
-                    title: '',
-                    description: '',
-                    url: '',
-                    categories: [],
-                    icon: 'fas fa-link',
-                    iconBg: 'bg-blue-100',
-                    iconColor: 'text-blue-600',
-                    customIcon: '',
-                    customIconColor: '',
-                    tags: ['未分类'],
-                    tagsInput: '未分类',
-                    isFavorite: false
-                },
-
-                validateIcon(icon) {
-                    // 验证 Font Awesome 图标格式
-                    const iconRegex = /^(fa[bsrl]?)\s+(fa-[a-z0-9-]+)$/;
-                    return iconRegex.test(icon);
-                },
-
-                validateColor(color) {
-                    // 验证 Tailwind 颜色类名格式
-                    const colorRegex = /^text-(red|blue|green|yellow|purple|pink|indigo|gray)-(100|200|300|400|500|600|700|800|900)$/;
-                    return colorRegex.test(color);
-                },
-
-                openAddModal() {
-                    this.newCard = {
-                        title: '',
-                        description: '',
-                        url: '',
-                        categories: [],
-                        icon: 'fas fa-link',
-                        iconBg: 'bg-blue-100',
-                        iconColor: 'text-blue-600',
-                        customIcon: '',
-                        customIconColor: '',
-                        tags: ['未分类'],
-                        tagsInput: '未分类',
-                        isFavorite: false
-                    };
-                    this.showAddModal = true;
-                },
-
-                async addCard() {
-                    try {
-                        if (this.newCard.customIcon && !this.validateIcon(this.newCard.customIcon)) {
-                            alert('图标格式不正确，请使用正确的 Font Awesome 格式，例如：fas fa-code');
-                            return;
-                        }
-
-                        if (this.newCard.customIconColor && !this.validateColor(this.newCard.customIconColor)) {
-                            alert('颜色格式不正确，请使用正确的 Tailwind 颜色格式，例如：text-blue-600');
-                            return;
-                        }
-
-                        const tags = this.newCard.tagsInput
-                            ? this.newCard.tagsInput.split(',').map(tag => tag.trim()).filter(Boolean)
-                            : ['未分类'];
-
-                        const finalIcon = this.newCard.customIcon || this.newCard.icon;
-                        const finalIconColor = this.newCard.customIconColor || this.newCard.iconColor;
-
-                        const cardToAdd = {
-                            title: this.newCard.title || '',
-                            description: this.newCard.description || '',
-                            url: this.newCard.url || '',
-                            categories: Array.isArray(this.newCard.categories) ? [...this.newCard.categories] : [],
-                            icon: finalIcon,
-                            iconBg: this.newCard.iconBg || 'bg-blue-100',
-                            iconColor: finalIconColor,
-                            tags: tags,
-                            isFavorite: Boolean(this.newCard.isFavorite),
-                            id: Date.now() + Math.random(),
-                            createTime: new Date().toISOString(),
-                            updateTime: new Date().toISOString()
-                        };
-
-                        const transaction = db.transaction(['cards'], 'readwrite');
-                        const objectStore = transaction.objectStore('cards');
-                        await objectStore.add(cardToAdd);
-
-                        await this.loadCards();
-                        this.showAddModal = false;
-                        this.resetNewCard();
-                    } catch (error) {
-                        alert('添加卡片失败，请检查输入数据是否正确。');
-                    }
-                },
-
-                async init() {
-                    try {
-                        await initDB();
-                        await this.loadCards();
-                    } catch (error) {
-                        alert('初始化失败，请刷新页面重试。');
-                    }
-                },
-
-                async loadCards() {
-                    try {
-                        const transaction = db.transaction(['cards'], 'readonly');
-                        const objectStore = transaction.objectStore('cards');
-                        const request = objectStore.getAll();
-
-                        return new Promise((resolve, reject) => {
-                            request.onsuccess = () => {
-                                this.cards = request.result.map(card => ({
-                                    ...card,
-                                    createTime: new Date(card.createTime),
-                                    updateTime: new Date(card.updateTime)
-                                }));
-                                resolve();
-                            };
-                            request.onerror = () => reject();
-                        });
-                    } catch (error) {
-                        alert('加载卡片失败，请刷新页面重试。');
-                    }
-                },
-
-                filteredCards() {
-                    if (!this.cards) return [];
-
-                    const searchLower = this.searchQuery.toLowerCase().trim();
-
-                    return this.cards.filter(card => {
-                        // 分类过滤
-                        if (this.currentCategory !== 'all' &&
-                            (!card.categories || !card.categories.includes(this.currentCategory))) {
-                            return false;
-                        }
-
-                        // 搜索过滤
-                        if (searchLower) {
-                            return (
-                                (card.title && card.title.toLowerCase().includes(searchLower)) ||
-                                (card.description && card.description.toLowerCase().includes(searchLower)) ||
-                                (card.tags && card.tags.some(tag => tag.toLowerCase().includes(searchLower))) ||
-                                (card.categories && card.categories.some(cat => cat.toLowerCase().includes(searchLower)))
-                            );
-                        }
-
-                        return true;
-                    }).sort((a, b) => {
-                        switch (this.sortBy) {
-                            case 'hot':
-                                return b.isFavorite - a.isFavorite ||
-                                    new Date(b.updateTime) - new Date(a.updateTime);
-                            case 'newest':
-                                return new Date(b.createTime) - new Date(a.createTime);
-                            case 'alphabet':
-                                return (a.title || '').localeCompare(b.title || '', 'zh-CN');
-                            default:
-                                return 0;
-                        }
-                    });
-                },
-
-                filteredDrawerCards() {
-                    if (!this.cards) return [];
-                    const searchLower = this.drawerSearchQuery.toLowerCase();
-
-                    return this.cards.filter(card =>
-                        card.isFavorite &&
-                        (!searchLower ||
-                            card.title.toLowerCase().includes(searchLower) ||
-                            card.description.toLowerCase().includes(searchLower))
-                    );
-                },
-
-                filteredAllCards() {
-                    if (!this.cards) return [];
-                    const searchLower = this.drawerSearchQuery.toLowerCase();
-
-                    return this.cards.filter(card =>
-                        !searchLower ||
-                        card.title.toLowerCase().includes(searchLower) ||
-                        card.description.toLowerCase().includes(searchLower)
-                    );
-                },
-
-                async toggleFavorite(card) {
-                    try {
-                        const updatedCard = {
-                            ...card,
-                            isFavorite: !card.isFavorite,
-                            updateTime: new Date().toISOString()
-                        };
-
-                        const transaction = db.transaction(['cards'], 'readwrite');
-                        const objectStore = transaction.objectStore('cards');
-                        await objectStore.put(updatedCard);
-
-                        const index = this.cards.findIndex(c => c.id === card.id);
-                        if (index !== -1) {
-                            this.cards[index] = {
-                                ...updatedCard,
-                                createTime: new Date(updatedCard.createTime),
-                                updateTime: new Date(updatedCard.updateTime)
-                            };
-                        }
-                    } catch (error) {
-                        alert('更新收藏状态失败，请重试。');
-                    }
-                },
-
-                async deleteCard(id) {
-                    if (confirm('确定要删除这张卡片吗？')) {
-                        try {
-                            const transaction = db.transaction(['cards'], 'readwrite');
-                            const objectStore = transaction.objectStore('cards');
-                            const request = objectStore.delete(id);
-
-                            request.onsuccess = () => {
-                                this.loadCards();
-                            };
-
-                            request.onerror = () => {
-                                console.error('删除卡片失败');
-                            };
-                        } catch (error) {
-                            console.error('删除卡片失败:', error);
-                        }
-                    }
-                },
-
-                editCard(card) {
-                    if (!card) {
-                        console.error('编辑的卡片数据为空');
-                        return;
-                    }
-
-                    // 重置编辑状态
-                    this.editingCard = {
-                        id: card.id || Date.now(),
-                        title: card.title || '',
-                        description: card.description || '',
-                        url: card.url || '',
-                        categories: Array.isArray(card.categories) ? [...card.categories] : [],
-                        icon: card.icon || 'fas fa-link',
-                        iconBg: card.iconBg || 'bg-blue-100',
-                        iconColor: card.iconColor || 'text-blue-600',
-                        customIcon: card.customIcon || '',
-                        customIconColor: card.customIconColor || '',
-                        tags: Array.isArray(card.tags) ? [...card.tags] : ['未分类'],
-                        tagsInput: Array.isArray(card.tags) ? card.tags.join(', ') : '未分类',
-                        isFavorite: Boolean(card.isFavorite),
-                        createTime: card.createTime || new Date().toISOString(),
-                        updateTime: card.updateTime || new Date().toISOString()
-                    };
-
-                    console.log('正在编辑的卡片:', this.editingCard);
-                    this.showEditModal = true;
-                },
-
-                async saveCard() {
-                    try {
-                        if (!this.editingCard) {
-                            console.error('没有要保存的卡片数据');
-                            return;
-                        }
-
-                        // 验证自定义图标和颜色
-                        if (this.editingCard.customIcon && !this.validateIcon(this.editingCard.customIcon)) {
-                            alert('图标格式不正确，请使用正确的 Font Awesome 格式，例如：fas fa-code');
-                            return;
-                        }
-
-                        if (this.editingCard.customIconColor && !this.validateColor(this.editingCard.customIconColor)) {
-                            alert('颜色格式不正确，请使用正确的 Tailwind 颜色格式，例如：text-blue-600');
-                            return;
-                        }
-
-                        // 处理标签
-                        const tags = this.editingCard.tagsInput
-                            ? this.editingCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
-                            : ['未分类'];
-
-                        // 使用自定义值或默认值
-                        const finalIcon = this.editingCard.customIcon || this.editingCard.icon;
-                        const finalIconColor = this.editingCard.customIconColor || this.editingCard.iconColor;
-
-                        // 确保所有属性都有值
-                        const updatedCard = {
-                            id: this.editingCard.id || Date.now(),
-                            title: this.editingCard.title || '',
-                            description: this.editingCard.description || '',
-                            url: this.editingCard.url || '',
-                            categories: Array.isArray(this.editingCard.categories) ? [...this.editingCard.categories] : [],
-                            icon: finalIcon,
-                            iconBg: this.editingCard.iconBg || 'bg-blue-100',
-                            iconColor: finalIconColor,
-                            tags: tags,
-                            isFavorite: Boolean(this.editingCard.isFavorite),
-                            createTime: this.editingCard.createTime || new Date().toISOString(),
-                            updateTime: new Date().toISOString()
-                        };
-
-                        console.log('准备保存更新后的卡片:', updatedCard);
-
-                        const transaction = db.transaction(['cards'], 'readwrite');
-                        const objectStore = transaction.objectStore('cards');
-                        const request = objectStore.put(updatedCard);
-
-                        request.onsuccess = () => {
-                            console.log('成功更新卡片');
-                            this.loadCards();
-                            // 先重置editingCard为初始状态
-                            this.editingCard = {
-                                id: null,
-                                title: '',
-                                description: '',
-                                url: '',
-                                categories: [],
-                                icon: 'fas fa-link',
-                                iconBg: 'bg-blue-100',
-                                iconColor: 'text-blue-600',
-                                customIcon: '',
-                                customIconColor: '',
-                                tags: ['未分类'],
-                                tagsInput: '未分类',
-                                isFavorite: false,
-                                createTime: null,
-                                updateTime: null
-                            };
-                            // 最后关闭模态框
-                            this.showEditModal = false;
-                        };
-
-                        request.onerror = (error) => {
-                            console.error('更新卡片失败:', error);
-                            alert('更新卡片失败，请检查输入数据是否正确。');
-                        };
-                    } catch (error) {
-                        console.error('保存卡片失败:', error);
-                        alert('保存卡片失败，请检查输入数据是否正确。');
-                    }
-                },
-
-                handleSearch(event) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-
-                        if (!this.searchTopQuery.trim()) return;
-
-                        // 执行搜索
-                        this.searchResults = this.cards.filter(card => {
-                            const searchLower = this.searchTopQuery.toLowerCase().trim();
-                            return (card.title && card.title.toLowerCase().includes(searchLower)) ||
-                                (card.description && card.description.toLowerCase().includes(searchLower)) ||
-                                (card.tags && card.tags.some(tag => tag.toLowerCase().includes(searchLower))) ||
-                                (card.categories && card.categories.some(cat => cat.toLowerCase().includes(searchLower)));
-                        });
-
-                        // 显示搜索结果模态框
-                        this.showSearchModal = true;
-                    }
-                },
-
-                exportCards() {
-                    try {
-                        // 准备导出数据
-                        const exportData = {
-                            version: '1.0',
-                            exportDate: new Date().toISOString(),
-                            cards: this.cards.map(card => ({
-                                ...card,
-                                createTime: card.createTime instanceof Date ? card.createTime.toISOString() : card.createTime,
-                                updateTime: card.updateTime instanceof Date ? card.updateTime.toISOString() : card.updateTime
-                            }))
-                        };
-
-                        // 转换为JSON字符串
-                        const jsonStr = JSON.stringify(exportData, null, 2);
-
-                        // 创建Blob对象
-                        const blob = new Blob([jsonStr], { type: 'application/json' });
-
-                        // 创建下载链接
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `devnav-cards-${new Date().toISOString().slice(0, 10)}.json`;
-
-                        // 触发下载
-                        document.body.appendChild(a);
-                        a.click();
-
-                        // 清理
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-
-                        alert('导出成功！');
-                    } catch (error) {
-                        console.error('导出失败:', error);
-                        alert('导出失败，请查看控制台了解详细信息。');
-                    }
-                },
-
-                async importCards(event) {
-                    try {
-                        const file = event.target.files[0];
-                        if (!file) {
-                            alert('请选择要导入的文件');
-                            return;
-                        }
-
-                        // 读取文件内容
-                        const reader = new FileReader();
-                        reader.onload = async (e) => {
-                            try {
-                                const importData = JSON.parse(e.target.result);
-
-                                // 验证导入数据格式
-                                if (!importData.cards || !Array.isArray(importData.cards)) {
-                                    throw new Error('无效的导入数据格式');
-                                }
-
-                                // 开始导入
-                                const transaction = db.transaction(['cards'], 'readwrite');
-                                const objectStore = transaction.objectStore('cards');
-
-                                let successCount = 0;
-                                let failCount = 0;
-
-                                for (const card of importData.cards) {
-                                    try {
-                                        // 为每张卡片生成新的ID
-                                        const newCard = {
-                                            ...card,
-                                            id: Date.now() + Math.random(),
-                                            createTime: new Date().toISOString(),
-                                            updateTime: new Date().toISOString()
-                                        };
-
-                                        await new Promise((resolve, reject) => {
-                                            const request = objectStore.add(newCard);
-                                            request.onsuccess = () => resolve();
-                                            request.onerror = () => reject();
-                                        });
-
-                                        successCount++;
-                                    } catch (error) {
-                                        console.error('导入单张卡片失败:', error);
-                                        failCount++;
-                                    }
-                                }
-
-                                // 重新加载卡片
-                                await this.loadCards();
-
-                                // 清空文件输入
-                                event.target.value = '';
-
-                                alert(`导入完成！\n成功: ${successCount} 张\n失败: ${failCount} 张`);
-                            } catch (error) {
-                                console.error('处理导入数据失败:', error);
-                                alert('导入失败，请确保文件格式正确。');
-                            }
-                        };
-
-                        reader.readAsText(file);
-                    } catch (error) {
-                        console.error('导入失败:', error);
-                        alert('导入失败，请查看控制台了解详细信息。');
-                    }
-                },
-
-                downloadTemplate() {
-                    try {
-                        // 创建模板数据
-                        const templateData = {
-                            version: '1.0',
-                            exportDate: new Date().toISOString(),
-                            cards: [
-                                {
-                                    title: '示例卡片',
-                                    description: '这是一个示例卡片，用于展示卡片数据的结构',
-                                    icon: 'fas fa-star',
-                                    iconBg: 'bg-yellow-100',
-                                    iconColor: 'text-yellow-600',
-                                    categories: ['docs', 'frontend'],
-                                    tags: ['示例', '模板'],
-                                    url: 'https://example.com',
-                                    isFavorite: false
-                                }
-                            ]
-                        };
-
-                        // 转换为JSON字符串
-                        const jsonStr = JSON.stringify(templateData, null, 2);
-
-                        // 创建Blob对象
-                        const blob = new Blob([jsonStr], { type: 'application/json' });
-
-                        // 创建下载链接
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'devnav-template.json';
-
-                        // 触发下载
-                        document.body.appendChild(a);
-                        a.click();
-
-                        // 清理
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-
-                        alert('模板下载成功！');
-                    } catch (error) {
-                        console.error('模板下载失败:', error);
-                        alert('模板下载失败，请查看控制台了解详细信息。');
-                    }
-                },
-
-                resetNewCard() {
-                    this.newCard = {
-                        title: '',
-                        description: '',
-                        url: '',
-                        categories: [],
-                        icon: 'fas fa-link',
-                        iconBg: 'bg-blue-100',
-                        iconColor: 'text-blue-600',
-                        customIcon: '',
-                        customIconColor: '',
-                        tags: ['未分类'],
-                        tagsInput: '未分类',
-                        isFavorite: false
-                    };
-                }
-            };
-        }
-    </script>
+    <script src="js/app.js"></script>
+    
+    <!-- 自定义提示框 -->
+    <div x-show="toast.show" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-4"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-4"
+         @click="closeToast()"
+         class="fixed bottom-4 right-4 z-50 p-4 rounded-lg shadow-lg flex items-center"
+         :class="{
+             'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': toast.type === 'success',
+             'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': toast.type === 'error',
+             'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': toast.type === 'warning',
+             'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100': toast.type === 'info'
+         }">
+        <div class="mr-3">
+            <i class="fas" 
+               :class="{
+                   'fa-check-circle': toast.type === 'success',
+                   'fa-exclamation-circle': toast.type === 'error',
+                   'fa-exclamation-triangle': toast.type === 'warning',
+                   'fa-info-circle': toast.type === 'info'
+               }"></i>
+        </div>
+        <div x-text="toast.message"></div>
+        <button class="ml-4 text-current opacity-75 hover:opacity-100" @click.stop="closeToast()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <!-- 自定义确认对话框 -->
+    <div x-show="confirmDialog.show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            
+            <div @click.outside="cancelConfirm()" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 transform scale-100"
+                 x-transition:leave-end="opacity-0 transform scale-95"
+                 class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                             :class="{
+                                 'bg-green-100 dark:bg-green-900': confirmDialog.type === 'success',
+                                 'bg-red-100 dark:bg-red-900': confirmDialog.type === 'error',
+                                 'bg-yellow-100 dark:bg-yellow-900': confirmDialog.type === 'warning',
+                                 'bg-blue-100 dark:bg-blue-900': confirmDialog.type === 'info'
+                             }">
+                            <i class="fas text-xl"
+                               :class="{
+                                   'fa-check-circle text-green-600 dark:text-green-400': confirmDialog.type === 'success',
+                                   'fa-exclamation-circle text-red-600 dark:text-red-400': confirmDialog.type === 'error',
+                                   'fa-exclamation-triangle text-yellow-600 dark:text-yellow-400': confirmDialog.type === 'warning',
+                                   'fa-info-circle text-blue-600 dark:text-blue-400': confirmDialog.type === 'info'
+                               }"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" x-text="confirmDialog.title"></h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400" x-text="confirmDialog.message"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button @click="confirmAction()" 
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                            :class="{
+                                'bg-green-600 hover:bg-green-700 focus:ring-green-500': confirmDialog.type === 'success',
+                                'bg-red-600 hover:bg-red-700 focus:ring-red-500': confirmDialog.type === 'error',
+                                'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500': confirmDialog.type === 'warning',
+                                'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500': confirmDialog.type === 'info'
+                            }">
+                        <span x-text="confirmDialog.confirmText"></span>
+                    </button>
+                    <button @click="cancelConfirm()" type="button" 
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        <span x-text="confirmDialog.cancelText"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
