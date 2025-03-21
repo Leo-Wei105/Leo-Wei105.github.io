@@ -312,10 +312,16 @@
                                             class="px-3 py-2 font-medium text-sm rounded-md">
                                             <i class="fas fa-list mr-2"></i>全部卡片
                                         </button>
+                                        <button @click="drawerTab = 'github'"
+                                            :class="drawerTab === 'github' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+                                            class="px-3 py-2 font-medium text-sm rounded-md">
+                                            <i class="fab fa-github mr-2"></i>GitHub 同步
+                                        </button>
                                     </nav>
                                 </div>
 
-                                <div class="mt-6">
+                                <!-- 搜索框 - 仅在收藏夹和全部卡片选项卡显示 -->
+                                <div class="mt-6" x-show="drawerTab !== 'github'">
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="relative flex-1">
                                             <input type="text" x-model="drawerSearchQuery" id="drawer-search" name="drawer-search"
@@ -333,7 +339,8 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-6 space-y-4">
+                                <!-- 卡片列表 - 仅在收藏夹和全部卡片选项卡显示 -->
+                                <div class="mt-6 space-y-4" x-show="drawerTab !== 'github'">
                                     <template
                                         x-for="card in drawerTab === 'favorites' ? filteredDrawerCards() : filteredAllCards()"
                                         :key="card.id">
@@ -377,532 +384,583 @@
                                         </div>
                                     </template>
                                 </div>
+
+                                <!-- GitHub 同步配置表单 -->
+                                <div x-show="drawerTab === 'github'" class="mt-6 space-y-4">
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">GitHub 同步设置</h3>
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                    GitHub 用户名
+                                                </label>
+                                                <input type="text" x-model="githubConfig.owner"
+                                                    class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                    仓库名称
+                                                </label>
+                                                <input type="text" x-model="githubConfig.repo"
+                                                    class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                    分支名称
+                                                </label>
+                                                <input type="text" x-model="githubConfig.branch"
+                                                    class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                    访问令牌
+                                                </label>
+                                                <input type="password" x-model="githubConfig.token"
+                                                    class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                                    请在 GitHub Settings > Developer settings > Personal access tokens 中生成令牌
+                                                </p>
+                                            </div>
+                                            <div class="flex justify-between items-center mt-6">
+                                                <button @click="saveGithubConfig()"
+                                                    class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                    保存配置
+                                                </button>
+                                                <button @click="syncWithGithub()"
+                                                    class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                                    <i class="fas fa-sync-alt mr-2"></i>同步数据
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
             </div>
         </div>
-
-        <!-- 编辑卡片模态框 -->
-        <div x-show="showEditModal" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <div
-                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-                    <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
-                                    编辑卡片
-                                </h3>
-                                <div class="grid grid-cols-2 gap-6">
-                                    <!-- 左列 -->
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="edit-title"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                标题
-                                            </label>
-                                            <input type="text" x-model="editingCard.title" id="edit-title" name="edit-title"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
-                                        </div>
-                                        <div>
-                                            <label for="edit-description"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                描述
-                                            </label>
-                                            <textarea x-model="editingCard.description" id="edit-description" name="edit-description"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                rows="3"></textarea>
-                                        </div>
-                                        <div>
-                                            <label for="edit-url"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                URL
-                                            </label>
-                                            <input type="url" x-model="editingCard.url" id="edit-url" name="edit-url"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
-                                        </div>
-                                        <div>
-                                            <label for="edit-tags"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                标签（用逗号分隔）
-                                            </label>
-                                            <input type="text" x-model="editingCard.tagsInput" id="edit-tags" name="edit-tags"
-                                                @input="editingCard.tags = editingCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                placeholder="输入标签，用逗号分隔">
-                                        </div>
-                                    </div>
-                                    <!-- 右列 -->
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                分类（可多选）
-                                            </label>
-                                            <div class="grid grid-cols-2 gap-2">
-                                                <template
-                                                    x-for="cat in ['docs', 'tools', 'learn', 'community', 'frontend', 'backend', 'devops', 'ai']">
-                                                    <label
-                                                        class="inline-flex items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200">
-                                                        <input type="checkbox" :value="cat"
-                                                            x-model="editingCard.categories"
-                                                            class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 dark:border-gray-500">
-                                                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
-                                                            x-text="({
-                                                            'docs': '文档',
-                                                            'tools': '工具',
-                                                            'learn': '学习',
-                                                            'community': '社区',
-                                                            'frontend': '前端开发',
-                                                            'backend': '后端开发',
-                                                            'devops': 'DevOps',
-                                                            'ai': '人工智能'
-                                                        })[cat]"></span>
-                                                    </label>
-                                                </template>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                图标
-                                            </label>
-                                            <div class="space-y-4">
-                                                <div class="relative">
-                                                    <input type="text" x-model="editingCard.customIcon"
-                                                        class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                        placeholder="输入自定义图标类名(例如: fas fa-code)">
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        支持 Font Awesome 图标，格式如：fas fa-code
-                                                    </div>
-                                                </div>
-                                                <div class="grid grid-cols-6 gap-2">
-                                                    <template
-                                                        x-for="icon in ['fas fa-link', 'fas fa-book', 'fas fa-code', 'fas fa-tools', 'fas fa-graduation-cap', 'fas fa-users', 'fas fa-server', 'fas fa-database', 'fas fa-mobile-alt', 'fas fa-laptop-code', 'fas fa-brain', 'fas fa-cloud']">
-                                                        <label
-                                                            class="inline-flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
-                                                            :class="{'border-indigo-500 dark:border-indigo-400': editingCard.icon === icon}">
-                                                            <input type="radio" :value="icon" x-model="editingCard.icon"
-                                                                class="hidden" @change="editingCard.customIcon = icon">
-                                                            <i :class="icon + ' text-lg ' + editingCard.iconColor"></i>
-                                                        </label>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                图标颜色
-                                            </label>
-                                            <div class="space-y-4">
-                                                <div class="relative">
-                                                    <input type="text" x-model="editingCard.customIconColor"
-                                                        class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                        placeholder="输入自定义颜色类名(例如: text-blue-600)">
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        支持 Tailwind 颜色类名，格式如：text-blue-600
-                                                    </div>
-                                                </div>
-                                                <div class="grid grid-cols-4 gap-2">
-                                                    <template x-for="color in [
-                                                        {bg: 'bg-blue-100', text: 'text-blue-600'},
-                                                        {bg: 'bg-green-100', text: 'text-green-600'},
-                                                        {bg: 'bg-red-100', text: 'text-red-600'},
-                                                        {bg: 'bg-yellow-100', text: 'text-yellow-600'},
-                                                        {bg: 'bg-purple-100', text: 'text-purple-600'},
-                                                        {bg: 'bg-pink-100', text: 'text-pink-600'},
-                                                        {bg: 'bg-indigo-100', text: 'text-indigo-600'},
-                                                        {bg: 'bg-gray-100', text: 'text-gray-600'}
-                                                    ]">
-                                                        <label
-                                                            class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
-                                                            :class="[color.bg, {'border-indigo-500 dark:border-indigo-400': editingCard.iconBg === color.bg}]">
-                                                            <input type="radio" x-model="editingCard.iconBg"
-                                                                :value="color.bg" class="hidden"
-                                                                @change="editingCard.iconColor = color.text; editingCard.customIconColor = color.text">
-                                                            <i :class="editingCard.icon + ' text-lg ' + color.text"></i>
-                                                        </label>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end space-x-3">
-                        <button type="button" @click="showEditModal = false"
-                            class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                            取消
-                        </button>
-                        <button type="button" @click="saveCard()"
-                            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                            保存
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 添加卡片模态框 -->
-        <div x-show="showAddModal" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <div
-                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
-                    <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
-                                    添加卡片
-                                </h3>
-                                <div class="grid grid-cols-2 gap-6">
-                                    <!-- 左列 -->
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="new-title"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                标题
-                                            </label>
-                                            <input type="text" x-model="newCard.title" id="new-title" name="new-title"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
-                                        </div>
-                                        <div>
-                                            <label for="new-description"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                描述
-                                            </label>
-                                            <textarea x-model="newCard.description" id="new-description" name="new-description"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                rows="3"></textarea>
-                                        </div>
-                                        <div>
-                                            <label for="new-url"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                URL
-                                            </label>
-                                            <input type="url" x-model="newCard.url" id="new-url" name="new-url"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
-                                        </div>
-                                        <div>
-                                            <label for="new-tags"
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                标签（用逗号分隔）
-                                            </label>
-                                            <input type="text" x-model="newCard.tagsInput" id="new-tags" name="new-tags"
-                                                @input="newCard.tags = newCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')"
-                                                class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                placeholder="输入标签，用逗号分隔">
-                                        </div>
-                                    </div>
-                                    <!-- 右列 -->
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                分类（可多选）
-                                            </label>
-                                            <div class="grid grid-cols-2 gap-2">
-                                                <template
-                                                    x-for="cat in ['docs', 'tools', 'learn', 'community', 'frontend', 'backend', 'devops', 'ai']">
-                                                    <label
-                                                        class="inline-flex items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200">
-                                                        <input type="checkbox" :value="cat" x-model="newCard.categories"
-                                                            class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 dark:border-gray-500">
-                                                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
-                                                            x-text="({
-                                                            'docs': '文档',
-                                                            'tools': '工具',
-                                                            'learn': '学习',
-                                                            'community': '社区',
-                                                            'frontend': '前端开发',
-                                                            'backend': '后端开发',
-                                                            'devops': 'DevOps',
-                                                            'ai': '人工智能'
-                                                        })[cat]"></span>
-                                                    </label>
-                                                </template>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                图标
-                                            </label>
-                                            <div class="space-y-4">
-                                                <div class="relative">
-                                                    <input type="text" x-model="newCard.customIcon"
-                                                        class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                        placeholder="输入自定义图标类名(例如: fas fa-code)">
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        支持 Font Awesome 图标，格式如：fas fa-code
-                                                    </div>
-                                                </div>
-                                                <div class="grid grid-cols-6 gap-2">
-                                                    <template
-                                                        x-for="icon in ['fas fa-link', 'fas fa-book', 'fas fa-code', 'fas fa-tools', 'fas fa-graduation-cap', 'fas fa-users', 'fas fa-server', 'fas fa-database', 'fas fa-mobile-alt', 'fas fa-laptop-code', 'fas fa-brain', 'fas fa-cloud']">
-                                                        <label
-                                                            class="inline-flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
-                                                            :class="{'border-indigo-500 dark:border-indigo-400': newCard.icon === icon}">
-                                                            <input type="radio" :value="icon" x-model="newCard.icon"
-                                                                class="hidden">
-                                                            <i :class="icon + ' text-lg ' + newCard.iconColor"></i>
-                                                        </label>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label
-                                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                图标颜色
-                                            </label>
-                                            <div class="space-y-4">
-                                                <div class="relative">
-                                                    <input type="text" x-model="newCard.customIconColor"
-                                                        class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
-                                                        placeholder="输入自定义颜色类名(例如: text-blue-600)">
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        支持 Tailwind 颜色类名，格式如：text-blue-600
-                                                    </div>
-                                                </div>
-                                                <div class="grid grid-cols-4 gap-2">
-                                                    <template x-for="color in [
-                                                        {bg: 'bg-blue-100', text: 'text-blue-600'},
-                                                        {bg: 'bg-green-100', text: 'text-green-600'},
-                                                        {bg: 'bg-red-100', text: 'text-red-600'},
-                                                        {bg: 'bg-yellow-100', text: 'text-yellow-600'},
-                                                        {bg: 'bg-purple-100', text: 'text-purple-600'},
-                                                        {bg: 'bg-pink-100', text: 'text-pink-600'},
-                                                        {bg: 'bg-indigo-100', text: 'text-indigo-600'},
-                                                        {bg: 'bg-gray-100', text: 'text-gray-600'}
-                                                    ]">
-                                                        <label
-                                                            class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
-                                                            :class="[color.bg, {'border-indigo-500 dark:border-indigo-400': newCard.iconBg === color.bg}]">
-                                                            <input type="radio" x-model="newCard.iconBg"
-                                                                :value="color.bg" class="hidden"
-                                                                @change="newCard.iconColor = color.text; newCard.customIconColor = color.text">
-                                                            <i :class="newCard.icon + ' text-lg ' + color.text"></i>
-                                                        </label>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end space-x-3">
-                        <button type="button" @click="showAddModal = false"
-                            class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                            取消
-                        </button>
-                        <button type="button" @click="addCard()"
-                            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                            添加
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 搜索结果模态框 -->
-        <div x-show="showSearchModal" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <div
-                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-                    <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-                                    搜索结果: <span x-text="searchTopQuery"></span>
-                                </h3>
-                                <div class="mt-4 space-y-4 max-h-96 overflow-y-auto">
-                                    <template x-for="card in searchResults" :key="card.id">
-                                        <div
-                                            class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <div class="flex items-center">
-                                                    <div
-                                                        :class="card.iconBg + ' w-8 h-8 rounded flex items-center justify-center mr-3'">
-                                                        <i :class="card.icon + ' ' + card.iconColor" :aria-label="'资源图标: ' + card.title"></i>
-                                                    </div>
-                                                    <h4 class="font-medium text-gray-900 dark:text-white"
-                                                        x-text="card.title"></h4>
-                                                </div>
-                                                <div class="flex items-center space-x-2">
-                                                    <button @click="window.open(card.url, '_blank')"
-                                                        class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
-                                                        <i class="fas fa-external-link-alt"></i>
-                                                    </button>
-                                                    <button @click="toggleFavorite(card)"
-                                                        :class="card.isFavorite ? 'text-yellow-500' : 'text-gray-400'"
-                                                        class="hover:text-yellow-600">
-                                                        <i :class="card.isFavorite ? 'fas fa-star' : 'far fa-star'"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"
-                                                x-text="card.description"></p>
-                                            <div class="flex flex-wrap gap-2">
-                                                <template x-for="tag in card.tags" :key="tag">
-                                                    <span
-                                                        class="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs px-2 py-1 rounded"
-                                                        x-text="tag"></span>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </template>
-                                    <div x-show="searchResults.length === 0"
-                                        class="text-center text-gray-500 dark:text-gray-400 py-8">
-                                        未找到匹配的资源
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end">
-                        <button type="button" @click="showSearchModal = false"
-                            class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            关闭
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 页脚 -->
-        <footer
-            class="bg-white dark:bg-gray-800 mt-12 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="flex items-center mb-4 md:mb-0">
-                        <i class="fas fa-code text-indigo-600 dark:text-indigo-400 text-2xl mr-2"></i>
-                        <span class="font-bold text-xl text-gray-800 dark:text-white">DevNav</span>
-                    </div>
-                    <div class="flex space-x-6">
-                        <a href="https://github.com/Leo-Wei105" target="_blank"
-                            class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="#"
-                            class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
-                            <i class="fab fa-weibo"></i>
-                        </a>
-                        <a href="#"
-                            class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
-                            <i class="fab fa-zhihu"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                    &copy; 2025 DevNav. 所有权利保留。
-                </div>
-            </div>
-        </footer>
-    </main>
-
-    <script src="js/app.js"></script>
-
-    <!-- 自定义提示框 -->
-    <div x-show="toast.show" x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 transform translate-y-4"
-        x-transition:enter-end="opacity-100 transform translate-y-0"
-        x-transition:leave="transition ease-in duration-300"
-        x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform translate-y-4" @click="closeToast()"
-        class="fixed bottom-4 right-4 z-50 p-4 rounded-lg shadow-lg flex items-center" :class="{
-             'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': toast.type === 'success',
-             'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': toast.type === 'error',
-             'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': toast.type === 'warning',
-             'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100': toast.type === 'info'
-         }">
-        <div class="mr-3">
-            <i class="fas" :class="{
-                   'fa-check-circle': toast.type === 'success',
-                   'fa-exclamation-circle': toast.type === 'error',
-                   'fa-exclamation-triangle': toast.type === 'warning',
-                   'fa-info-circle': toast.type === 'info'
-               }"></i>
-        </div>
-        <div x-text="toast.message"></div>
-        <button class="ml-4 text-current opacity-75 hover:opacity-100" @click.stop="closeToast()">
-            <i class="fas fa-times"></i>
-        </button>
     </div>
 
-    <!-- 自定义确认对话框 -->
-    <div x-show="confirmDialog.show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+    <!-- 编辑卡片模态框 -->
+    <div x-show="showEditModal" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
         <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
-
-            <div @click.outside="cancelConfirm()" x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 transform scale-95"
-                x-transition:enter-end="opacity-100 transform scale-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 transform scale-100"
-                x-transition:leave-end="opacity-0 transform scale-95"
-                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
                 <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10"
-                            :class="{
-                                 'bg-green-100 dark:bg-green-900': confirmDialog.type === 'success',
-                                 'bg-red-100 dark:bg-red-900': confirmDialog.type === 'error',
-                                 'bg-yellow-100 dark:bg-yellow-900': confirmDialog.type === 'warning',
-                                 'bg-blue-100 dark:bg-blue-900': confirmDialog.type === 'info'
-                             }">
-                            <i class="fas text-xl" :class="{
-                                   'fa-check-circle text-green-600 dark:text-green-400': confirmDialog.type === 'success',
-                                   'fa-exclamation-circle text-red-600 dark:text-red-400': confirmDialog.type === 'error',
-                                   'fa-exclamation-triangle text-yellow-600 dark:text-yellow-400': confirmDialog.type === 'warning',
-                                   'fa-info-circle text-blue-600 dark:text-blue-400': confirmDialog.type === 'info'
-                               }"></i>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white"
-                                x-text="confirmDialog.title"></h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500 dark:text-gray-400" x-text="confirmDialog.message"></p>
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                                编辑卡片
+                            </h3>
+                            <div class="grid grid-cols-2 gap-6">
+                                <!-- 左列 -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="edit-title"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            标题
+                                        </label>
+                                        <input type="text" x-model="editingCard.title" id="edit-title" name="edit-title"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
+                                    </div>
+                                    <div>
+                                        <label for="edit-description"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            描述
+                                        </label>
+                                        <textarea x-model="editingCard.description" id="edit-description" name="edit-description"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                            rows="3"></textarea>
+                                    </div>
+                                    <div>
+                                        <label for="edit-url"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            URL
+                                        </label>
+                                        <input type="url" x-model="editingCard.url" id="edit-url" name="edit-url"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
+                                    </div>
+                                    <div>
+                                        <label for="edit-tags"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            标签（用逗号分隔）
+                                        </label>
+                                        <input type="text" x-model="editingCard.tagsInput" id="edit-tags" name="edit-tags"
+                                            @input="editingCard.tags = editingCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                            placeholder="输入标签，用逗号分隔">
+                                    </div>
+                                </div>
+                                <!-- 右列 -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            分类（可多选）
+                                        </label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <template
+                                                x-for="cat in ['docs', 'tools', 'learn', 'community', 'frontend', 'backend', 'devops', 'ai']">
+                                                <label
+                                                    class="inline-flex items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200">
+                                                    <input type="checkbox" :value="cat"
+                                                        x-model="editingCard.categories"
+                                                        class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 dark:border-gray-500">
+                                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+                                                        x-text="({
+                                                        'docs': '文档',
+                                                        'tools': '工具',
+                                                        'learn': '学习',
+                                                        'community': '社区',
+                                                        'frontend': '前端开发',
+                                                        'backend': '后端开发',
+                                                        'devops': 'DevOps',
+                                                        'ai': '人工智能'
+                                                    })[cat]"></span>
+                                                </label>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            图标
+                                        </label>
+                                        <div class="space-y-4">
+                                            <div class="relative">
+                                                <input type="text" x-model="editingCard.customIcon"
+                                                    class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                                    placeholder="输入自定义图标类名(例如: fas fa-code)">
+                                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    支持 Font Awesome 图标，格式如：fas fa-code
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-6 gap-2">
+                                                <template
+                                                    x-for="icon in ['fas fa-link', 'fas fa-book', 'fas fa-code', 'fas fa-tools', 'fas fa-graduation-cap', 'fas fa-users', 'fas fa-server', 'fas fa-database', 'fas fa-mobile-alt', 'fas fa-laptop-code', 'fas fa-brain', 'fas fa-cloud']">
+                                                    <label
+                                                        class="inline-flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
+                                                        :class="{'border-indigo-500 dark:border-indigo-400': editingCard.icon === icon}">
+                                                        <input type="radio" :value="icon" x-model="editingCard.icon"
+                                                            class="hidden" @change="editingCard.customIcon = icon">
+                                                        <i :class="icon + ' text-lg ' + editingCard.iconColor"></i>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            图标颜色
+                                        </label>
+                                        <div class="space-y-4">
+                                            <div class="relative">
+                                                <input type="text" x-model="editingCard.customIconColor"
+                                                    class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                                    placeholder="输入自定义颜色类名(例如: text-blue-600)">
+                                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    支持 Tailwind 颜色类名，格式如：text-blue-600
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-4 gap-2">
+                                                <template x-for="color in [
+                                                    {bg: 'bg-blue-100', text: 'text-blue-600'},
+                                                    {bg: 'bg-green-100', text: 'text-green-600'},
+                                                    {bg: 'bg-red-100', text: 'text-red-600'},
+                                                    {bg: 'bg-yellow-100', text: 'text-yellow-600'},
+                                                    {bg: 'bg-purple-100', text: 'text-purple-600'},
+                                                    {bg: 'bg-pink-100', text: 'text-pink-600'},
+                                                    {bg: 'bg-indigo-100', text: 'text-indigo-600'},
+                                                    {bg: 'bg-gray-100', text: 'text-gray-600'}
+                                                ]">
+                                                    <label
+                                                        class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
+                                                        :class="[color.bg, {'border-indigo-500 dark:border-indigo-400': editingCard.iconBg === color.bg}]">
+                                                        <input type="radio" x-model="editingCard.iconBg"
+                                                            :value="color.bg" class="hidden"
+                                                            @change="editingCard.iconColor = color.text; editingCard.customIconColor = color.text">
+                                                        <i :class="editingCard.icon + ' text-lg ' + color.text"></i>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button @click="confirmAction()"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                        :class="{
-                                'bg-green-600 hover:bg-green-700 focus:ring-green-500': confirmDialog.type === 'success',
-                                'bg-red-600 hover:bg-red-700 focus:ring-red-500': confirmDialog.type === 'error',
-                                'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500': confirmDialog.type === 'warning',
-                                'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500': confirmDialog.type === 'info'
-                            }">
-                        <span x-text="confirmDialog.confirmText"></span>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end space-x-3">
+                    <button type="button" @click="showEditModal = false"
+                        class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                        取消
                     </button>
-                    <button @click="cancelConfirm()" type="button"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        <span x-text="confirmDialog.cancelText"></span>
+                    <button type="button" @click="saveCard()"
+                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                        保存
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 添加卡片模态框 -->
+    <div x-show="showAddModal" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-6">
+                                添加卡片
+                            </h3>
+                            <div class="grid grid-cols-2 gap-6">
+                                <!-- 左列 -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="new-title"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            标题
+                                        </label>
+                                        <input type="text" x-model="newCard.title" id="new-title" name="new-title"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
+                                    </div>
+                                    <div>
+                                        <label for="new-description"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            描述
+                                        </label>
+                                        <textarea x-model="newCard.description" id="new-description" name="new-description"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                            rows="3"></textarea>
+                                    </div>
+                                    <div>
+                                        <label for="new-url"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            URL
+                                        </label>
+                                        <input type="url" x-model="newCard.url" id="new-url" name="new-url"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
+                                    </div>
+                                    <div>
+                                        <label for="new-tags"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            标签（用逗号分隔）
+                                        </label>
+                                        <input type="text" x-model="newCard.tagsInput" id="new-tags" name="new-tags"
+                                            @input="newCard.tags = newCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')"
+                                            class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                            placeholder="输入标签，用逗号分隔">
+                                    </div>
+                                </div>
+                                <!-- 右列 -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            分类（可多选）
+                                        </label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <template
+                                                x-for="cat in ['docs', 'tools', 'learn', 'community', 'frontend', 'backend', 'devops', 'ai']">
+                                                <label
+                                                    class="inline-flex items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200">
+                                                    <input type="checkbox" :value="cat" x-model="newCard.categories"
+                                                        class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 dark:border-gray-500">
+                                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+                                                        x-text="({
+                                                        'docs': '文档',
+                                                        'tools': '工具',
+                                                        'learn': '学习',
+                                                        'community': '社区',
+                                                        'frontend': '前端开发',
+                                                        'backend': '后端开发',
+                                                        'devops': 'DevOps',
+                                                        'ai': '人工智能'
+                                                    })[cat]"></span>
+                                                </label>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            图标
+                                        </label>
+                                        <div class="space-y-4">
+                                            <div class="relative">
+                                                <input type="text" x-model="newCard.customIcon"
+                                                    class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                                    placeholder="输入自定义图标类名(例如: fas fa-code)">
+                                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    支持 Font Awesome 图标，格式如：fas fa-code
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-6 gap-2">
+                                                <template
+                                                    x-for="icon in ['fas fa-link', 'fas fa-book', 'fas fa-code', 'fas fa-tools', 'fas fa-graduation-cap', 'fas fa-users', 'fas fa-server', 'fas fa-database', 'fas fa-mobile-alt', 'fas fa-laptop-code', 'fas fa-brain', 'fas fa-cloud']">
+                                                    <label
+                                                        class="inline-flex items-center justify-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
+                                                        :class="{'border-indigo-500 dark:border-indigo-400': newCard.icon === icon}">
+                                                        <input type="radio" :value="icon" x-model="newCard.icon"
+                                                            class="hidden">
+                                                        <i :class="icon + ' text-lg ' + newCard.iconColor"></i>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            图标颜色
+                                        </label>
+                                        <div class="space-y-4">
+                                            <div class="relative">
+                                                <input type="text" x-model="newCard.customIconColor"
+                                                    class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
+                                                    placeholder="输入自定义颜色类名(例如: text-blue-600)">
+                                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    支持 Tailwind 颜色类名，格式如：text-blue-600
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-4 gap-2">
+                                                <template x-for="color in [
+                                                    {bg: 'bg-blue-100', text: 'text-blue-600'},
+                                                    {bg: 'bg-green-100', text: 'text-green-600'},
+                                                    {bg: 'bg-red-100', text: 'text-red-600'},
+                                                    {bg: 'bg-yellow-100', text: 'text-yellow-600'},
+                                                    {bg: 'bg-purple-100', text: 'text-purple-600'},
+                                                    {bg: 'bg-pink-100', text: 'text-pink-600'},
+                                                    {bg: 'bg-indigo-100', text: 'text-indigo-600'},
+                                                    {bg: 'bg-gray-100', text: 'text-gray-600'}
+                                                ]">
+                                                    <label
+                                                        class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors duration-200"
+                                                        :class="[color.bg, {'border-indigo-500 dark:border-indigo-400': newCard.iconBg === color.bg}]">
+                                                        <input type="radio" x-model="newCard.iconBg"
+                                                            :value="color.bg" class="hidden"
+                                                            @change="newCard.iconColor = color.text; newCard.customIconColor = color.text">
+                                                        <i :class="newCard.icon + ' text-lg ' + color.text"></i>
+                                                    </label>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end space-x-3">
+                    <button type="button" @click="showAddModal = false"
+                        class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                        取消
+                    </button>
+                    <button type="button" @click="addCard()"
+                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                        添加
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索结果模态框 -->
+    <div x-show="showSearchModal" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
+                                搜索结果: <span x-text="searchTopQuery"></span>
+                            </h3>
+                            <div class="mt-4 space-y-4 max-h-96 overflow-y-auto">
+                                <template x-for="card in searchResults" :key="card.id">
+                                    <div
+                                        class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center">
+                                                <div
+                                                    :class="card.iconBg + ' w-8 h-8 rounded flex items-center justify-center mr-3'">
+                                                    <i :class="card.icon + ' ' + card.iconColor" :aria-label="'资源图标: ' + card.title"></i>
+                                                </div>
+                                                <h4 class="font-medium text-gray-900 dark:text-white"
+                                                    x-text="card.title"></h4>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <button @click="window.open(card.url, '_blank')"
+                                                    class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </button>
+                                                <button @click="toggleFavorite(card)"
+                                                    :class="card.isFavorite ? 'text-yellow-500' : 'text-gray-400'"
+                                                    class="hover:text-yellow-600">
+                                                    <i :class="card.isFavorite ? 'fas fa-star' : 'far fa-star'"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-2"
+                                            x-text="card.description"></p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <template x-for="tag in card.tags" :key="tag">
+                                                <span
+                                                    class="bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-xs px-2 py-1 rounded"
+                                                    x-text="tag"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div x-show="searchResults.length === 0"
+                                    class="text-center text-gray-500 dark:text-gray-400 py-8">
+                                    未找到匹配的资源
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 flex justify-end">
+                    <button type="button" @click="showSearchModal = false"
+                        class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer
+        class="bg-white dark:bg-gray-800 mt-12 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-code text-indigo-600 dark:text-indigo-400 text-2xl mr-2"></i>
+                    <span class="font-bold text-xl text-gray-800 dark:text-white">DevNav</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://github.com/Leo-Wei105" target="_blank"
+                        class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#"
+                        class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
+                        <i class="fab fa-weibo"></i>
+                    </a>
+                    <a href="#"
+                        class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
+                        <i class="fab fa-zhihu"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                &copy; 2025 DevNav. 所有权利保留。
+            </div>
+        </div>
+    </footer>
+</main>
+
+<script src="js/app.js"></script>
+
+<!-- 自定义提示框 -->
+<div x-show="toast.show" x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform translate-y-4"
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 transform translate-y-0"
+    x-transition:leave-end="opacity-0 transform translate-y-4" @click="closeToast()"
+    class="fixed bottom-4 right-4 z-50 p-4 rounded-lg shadow-lg flex items-center" :class="{
+         'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': toast.type === 'success',
+         'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': toast.type === 'error',
+         'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': toast.type === 'warning',
+         'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100': toast.type === 'info'
+     }">
+    <div class="mr-3">
+        <i class="fas" :class="{
+               'fa-check-circle': toast.type === 'success',
+               'fa-exclamation-circle': toast.type === 'error',
+               'fa-exclamation-triangle': toast.type === 'warning',
+               'fa-info-circle': toast.type === 'info'
+           }"></i>
+    </div>
+    <div x-text="toast.message"></div>
+    <button class="ml-4 text-current opacity-75 hover:opacity-100" @click.stop="closeToast()">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
+<!-- 自定义确认对话框 -->
+<div x-show="confirmDialog.show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <div @click.outside="cancelConfirm()" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-95"
+            class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                        :class="{
+                             'bg-green-100 dark:bg-green-900': confirmDialog.type === 'success',
+                             'bg-red-100 dark:bg-red-900': confirmDialog.type === 'error',
+                             'bg-yellow-100 dark:bg-yellow-900': confirmDialog.type === 'warning',
+                             'bg-blue-100 dark:bg-blue-900': confirmDialog.type === 'info'
+                         }">
+                        <i class="fas text-xl" :class="{
+                               'fa-check-circle text-green-600 dark:text-green-400': confirmDialog.type === 'success',
+                               'fa-exclamation-circle text-red-600 dark:text-red-400': confirmDialog.type === 'error',
+                               'fa-exclamation-triangle text-yellow-600 dark:text-yellow-400': confirmDialog.type === 'warning',
+                               'fa-info-circle text-blue-600 dark:text-blue-400': confirmDialog.type === 'info'
+                           }"></i>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white"
+                            x-text="confirmDialog.title"></h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="confirmDialog.message"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button @click="confirmAction()"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                    :class="{
+                            'bg-green-600 hover:bg-green-700 focus:ring-green-500': confirmDialog.type === 'success',
+                            'bg-red-600 hover:bg-red-700 focus:ring-red-500': confirmDialog.type === 'error',
+                            'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500': confirmDialog.type === 'warning',
+                            'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500': confirmDialog.type === 'info'
+                        }">
+                    <span x-text="confirmDialog.confirmText"></span>
+                </button>
+                <button @click="cancelConfirm()" type="button"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    <span x-text="confirmDialog.cancelText"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>

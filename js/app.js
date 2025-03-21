@@ -109,6 +109,15 @@ function mainData() {
         showAddModal: false,
         showSearchModal: false,
         searchResults: [],
+        drawerTab: 'favorites',
+
+        // GitHub 配置
+        githubConfig: {
+            owner: localStorage.getItem('github_owner') || '',
+            repo: localStorage.getItem('github_repo') || '',
+            branch: localStorage.getItem('github_branch') || 'main',
+            token: localStorage.getItem('github_token') || ''
+        },
 
         toast: {
             show: false,
@@ -735,6 +744,120 @@ function mainData() {
                 tagsInput: '未分类',
                 isFavorite: false
             };
+        },
+
+        async saveGithubConfig() {
+            localStorage.setItem('github_owner', this.githubConfig.owner);
+            localStorage.setItem('github_repo', this.githubConfig.repo);
+            localStorage.setItem('github_branch', this.githubConfig.branch);
+            localStorage.setItem('github_token', this.githubConfig.token);
+            this.showToast('GitHub 配置已保存', 'success');
+        },
+
+        async syncWithGithub() {
+            try {
+                if (!this.githubConfig.owner || !this.githubConfig.repo || !this.githubConfig.token) {
+                    this.showToast('请先完成 GitHub 配置', 'error');
+                    return;
+                }
+
+                // 准备数据
+                const cardsData = JSON.stringify(this.cards, null, 2);
+                const filename = 'cards.json';
+                const message = 'Update cards data';
+                const url = `https://api.github.com/repos/${this.githubConfig.owner}/${this.githubConfig.repo}/contents/${filename}`;
+
+                // 获取现有文件（如果存在）
+                let sha;
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `token ${this.githubConfig.token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        sha = data.sha;
+                    }
+                } catch (error) {
+                    console.log('File does not exist yet');
+                }
+
+                // 上传/更新文件
+                const content = btoa(unescape(encodeURIComponent(cardsData)));
+                const body = {
+                    message,
+                    content,
+                    branch: this.githubConfig.branch
+                };
+                if (sha) {
+                    body.sha = sha;
+                }
+
+                const updateResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${this.githubConfig.token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (updateResponse.ok) {
+                    this.showToast('数据已成功同步到 GitHub', 'success');
+                } else {
+                    throw new Error('同步失败');
+                }
+            } catch (error) {
+                console.error('Sync error:', error);
+                this.showToast('同步失败：' + error.message, 'error');
+            }
+        },
+
+        async loadFromGithub() {
+            try {
+                if (!this.githubConfig.owner || !this.githubConfig.repo || !this.githubConfig.token) {
+                    this.showToast('请先完成 GitHub 配置', 'error');
+                    return;
+                }
+
+                const url = `https://api.github.com/repos/${this.githubConfig.owner}/${this.githubConfig.repo}/contents/cards.json`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${this.githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = decodeURIComponent(escape(atob(data.content)));
+                    const cards = JSON.parse(content);
+
+                    // 更新本地数据库
+                    const db = await this.getDB();
+                    const tx = db.transaction(['cards'], 'readwrite');
+                    const store = tx.objectStore('cards');
+
+                    // 清除现有数据
+                    await store.clear();
+
+                    // 添加新数据
+                    for (const card of cards) {
+                        await store.add(card);
+                    }
+
+                    await this.loadCards();
+                    this.showToast('已从 GitHub 加载数据', 'success');
+                } else {
+                    throw new Error('加载失败');
+                }
+            } catch (error) {
+                console.error('Load error:', error);
+                this.showToast('从 GitHub 加载失败：' + error.message, 'error');
+            }
         }
     };
 }
