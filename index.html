@@ -18,7 +18,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevNav - 程序员专属导航站</title>
+    <title>DevNav - 程序员专属导航站 | 发现优质编程资源</title>
+    <meta name="description" content="DevNav是程序员的专属导航站，提供优质的编程文档、开发工具、学习资源和技术社区导航。涵盖前端、后端、移动开发、DevOps、AI等多个领域。">
+    <meta name="keywords" content="程序员导航,开发者导航,编程资源,技术文档,开发工具,编程学习,技术社区,前端开发,后端开发,移动开发,DevOps,人工智能">
+    <meta name="author" content="DevNav">
+    <meta name="robots" content="index, follow">
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
@@ -135,10 +140,9 @@
     </div>
 
     <!-- 主体内容 -->
-    <div @keydown.escape.window="showDrawer = false" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main @keydown.escape.window="showDrawer = false" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- 欢迎区域 -->
-        <div
-            class="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-lg shadow-lg p-6 mb-8">
+        <section aria-label="欢迎区域" class="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-lg shadow-lg p-6 mb-8">
             <div class="flex flex-col md:flex-row items-center justify-between">
                 <div class="mb-4 md:mb-0 md:mr-6">
                     <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">欢迎使用 DevNav</h1>
@@ -168,10 +172,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- 分类标签栏 -->
-        <div class="mb-6 flex items-center justify-between">
+        <section aria-label="分类导航" class="mb-6 flex items-center justify-between">
             <div class="flex overflow-x-auto py-2 hide-scrollbar">
                 <button @click="currentCategory = 'all'"
                     :class="currentCategory === 'all' ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
@@ -213,7 +217,7 @@
                     <option value="alphabet">字母顺序</option>
                 </select>
             </div>
-        </div>
+        </section>
 
         <!-- 搜索框 -->
         <div class="mb-6">
@@ -228,7 +232,7 @@
         </div>
 
         <!-- 资源卡片网格 -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <section aria-label="资源列表" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <template x-for="card in filteredCards()" :key="card.id">
                 <div
                     class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 transform hover:shadow-lg dark:hover:shadow-2xl dark:shadow-gray-900 card-hover">
@@ -237,7 +241,7 @@
                             <div class="flex items-center">
                                 <div
                                     :class="card.iconBg + ' dark:bg-opacity-20 w-10 h-10 rounded-lg flex items-center justify-center mr-3'">
-                                    <i :class="card.icon + ' ' + card.iconColor + ' dark:text-opacity-80'"></i>
+                                    <i :class="card.icon + ' ' + card.iconColor" :aria-label="'资源图标: ' + card.title"></i>
                                 </div>
                                 <h3 class="font-medium text-gray-800 dark:text-white" x-text="card.title"></h3>
                             </div>
@@ -264,7 +268,7 @@
                     </div>
                 </div>
             </template>
-        </div>
+        </section>
 
         <!-- 收藏夹侧边栏 -->
         <div x-show="showDrawer" class="fixed inset-0 overflow-hidden z-50" style="display: none;"
@@ -337,7 +341,7 @@
                                                 <div class="flex items-center">
                                                     <div
                                                         :class="card.iconBg + ' w-10 h-10 rounded flex items-center justify-center mr-3 flex-shrink-0'">
-                                                        <i :class="card.icon + ' ' + card.iconColor"></i>
+                                                        <i :class="card.icon + ' ' + card.iconColor" :aria-label="'资源图标: ' + card.title"></i>
                                                     </div>
                                                     <div>
                                                         <h3 class="text-sm font-medium text-gray-900 dark:text-white"
@@ -734,7 +738,7 @@
                                                 <div class="flex items-center">
                                                     <div
                                                         :class="card.iconBg + ' w-8 h-8 rounded flex items-center justify-center mr-3'">
-                                                        <i :class="card.icon + ' ' + card.iconColor"></i>
+                                                        <i :class="card.icon + ' ' + card.iconColor" :aria-label="'资源图标: ' + card.title"></i>
                                                     </div>
                                                     <h4 class="font-medium text-gray-900 dark:text-white"
                                                         x-text="card.title"></h4>
@@ -809,7 +813,7 @@
                 </div>
             </div>
         </footer>
-    </div>
+    </main>
 
     <script src="js/app.js"></script>
 
