@@ -837,7 +837,9 @@ function mainData() {
                     const cards = JSON.parse(content);
 
                     // 更新本地数据库
-                    const db = await this.getDB();
+                    if (!db) {
+                        await initDB();  // 确保数据库已初始化
+                    }
                     const tx = db.transaction(['cards'], 'readwrite');
                     const store = tx.objectStore('cards');
 
