@@ -23,7 +23,7 @@
     <meta name="keywords" content="程序员导航,开发者导航,编程资源,技术文档,开发工具,编程学习,技术社区,前端开发,后端开发,移动开发,DevOps,人工智能">
     <meta name="author" content="DevNav">
     <meta name="robots" content="index, follow">
-    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="icon" href="nav_logo.png" type="image/png">
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -211,7 +211,7 @@
             </div>
             <div class="hidden md:flex items-center">
                 <span class="text-gray-600 dark:text-gray-400 text-sm mr-2">排序: </span>
-                <select x-model="sortBy"
+                <select x-model="sortBy" id="sort-by" name="sort-by"
                     class="bg-gray-100 dark:bg-gray-700 border-none rounded text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1 px-2 transition-colors duration-200">
                     <option value="hot">热门程度</option>
                     <option value="newest">最新添加</option>
@@ -223,7 +223,7 @@
         <!-- 搜索框 -->
         <div class="mb-6">
             <div class="relative">
-                <input type="text" x-model="searchQuery"
+                <input type="text" x-model="searchQuery" id="main-search" name="main-search"
                     class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="搜索卡片...">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -318,7 +318,7 @@
                                 <div class="mt-6">
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="relative flex-1">
-                                            <input type="text" x-model="drawerSearchQuery"
+                                            <input type="text" x-model="drawerSearchQuery" id="drawer-search" name="drawer-search"
                                                 class="w-full bg-gray-100 dark:bg-gray-700 border-none rounded-lg py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                                 :placeholder="drawerTab === 'favorites' ? '搜索收藏...' : '搜索所有卡片...'">
                                             <div
@@ -402,36 +402,36 @@
                                     <!-- 左列 -->
                                     <div class="space-y-4">
                                         <div>
-                                            <label
+                                            <label for="edit-title"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 标题
                                             </label>
-                                            <input type="text" x-model="editingCard.title"
+                                            <input type="text" x-model="editingCard.title" id="edit-title" name="edit-title"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
                                         </div>
                                         <div>
-                                            <label
+                                            <label for="edit-description"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 描述
                                             </label>
-                                            <textarea x-model="editingCard.description"
+                                            <textarea x-model="editingCard.description" id="edit-description" name="edit-description"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
                                                 rows="3"></textarea>
                                         </div>
                                         <div>
-                                            <label
+                                            <label for="edit-url"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 URL
                                             </label>
-                                            <input type="url" x-model="editingCard.url"
+                                            <input type="url" x-model="editingCard.url" id="edit-url" name="edit-url"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
                                         </div>
                                         <div>
-                                            <label
+                                            <label for="edit-tags"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 标签（用逗号分隔）
                                             </label>
-                                            <input type="text" x-model="editingCard.tagsInput"
+                                            <input type="text" x-model="editingCard.tagsInput" id="edit-tags" name="edit-tags"
                                                 @input="editingCard.tags = editingCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
                                                 placeholder="输入标签，用逗号分隔">
@@ -569,36 +569,36 @@
                                     <!-- 左列 -->
                                     <div class="space-y-4">
                                         <div>
-                                            <label
+                                            <label for="new-title"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 标题
                                             </label>
-                                            <input type="text" x-model="newCard.title"
+                                            <input type="text" x-model="newCard.title" id="new-title" name="new-title"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
                                         </div>
                                         <div>
-                                            <label
+                                            <label for="new-description"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 描述
                                             </label>
-                                            <textarea x-model="newCard.description"
+                                            <textarea x-model="newCard.description" id="new-description" name="new-description"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
                                                 rows="3"></textarea>
                                         </div>
                                         <div>
-                                            <label
+                                            <label for="new-url"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 URL
                                             </label>
-                                            <input type="url" x-model="newCard.url"
+                                            <input type="url" x-model="newCard.url" id="new-url" name="new-url"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2">
                                         </div>
                                         <div>
-                                            <label
+                                            <label for="new-tags"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 标签（用逗号分隔）
                                             </label>
-                                            <input type="text" x-model="newCard.tagsInput"
+                                            <input type="text" x-model="newCard.tagsInput" id="new-tags" name="new-tags"
                                                 @input="newCard.tags = newCard.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '')"
                                                 class="block w-full rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white text-base px-4 py-2"
                                                 placeholder="输入标签，用逗号分隔">
