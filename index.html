@@ -289,8 +289,8 @@
                         x-transition:leave="transform transition ease-in-out duration-300"
                         x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
 
-                        <div class="h-full bg-white dark:bg-gray-800 shadow-xl overflow-y-auto">
-                            <div class="px-4 py-6">
+                        <div class="h-full bg-white dark:bg-gray-800 shadow-xl">
+                            <div class="px-4 py-6 flex flex-col h-full">
                                 <div class="flex items-center justify-between">
                                     <h2 class="text-lg font-medium text-gray-900 dark:text-white">卡片管理</h2>
                                     <button @click="showDrawer = false" class="text-gray-400 hover:text-gray-500">
@@ -321,7 +321,7 @@
                                 </div>
 
                                 <!-- 搜索框 - 仅在收藏夹和全部卡片选项卡显示 -->
-                                <div class="mt-6" x-show="drawerTab !== 'github'">
+                                <div class="mt-4" x-show="drawerTab !== 'github'">
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="relative flex-1">
                                             <input type="text" x-model="drawerSearchQuery" id="drawer-search" name="drawer-search"
@@ -340,7 +340,7 @@
                                 </div>
 
                                 <!-- 卡片列表 - 仅在收藏夹和全部卡片选项卡显示 -->
-                                <div class="mt-6 space-y-4" x-show="drawerTab !== 'github'">
+                                <div class="mt-2 flex-1 space-y-4 max-w-2xl overflow-y-auto" x-show="drawerTab !== 'github'">
                                     <template
                                         x-for="card in drawerTab === 'favorites' ? filteredDrawerCards() : filteredAllCards()"
                                         :key="card.id">
@@ -354,7 +354,7 @@
                                                     <div>
                                                         <h3 class="text-sm font-medium text-gray-900 dark:text-white"
                                                             x-text="card.title"></h3>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400"
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2"
                                                             x-text="card.description"></p>
                                                     </div>
                                                 </div>
@@ -386,7 +386,7 @@
                                 </div>
 
                                 <!-- GitHub 同步配置表单 -->
-                                <div x-show="drawerTab === 'github'" class="mt-6 space-y-4">
+                                <div x-show="drawerTab === 'github'" class="mt-4 flex-1 overflow-y-auto space-y-4">
                                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">GitHub 同步设置</h3>
                                         <div class="space-y-4">
