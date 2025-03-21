@@ -251,7 +251,7 @@
                                 <i :class="card.isFavorite ? 'fas fa-star' : 'far fa-star'"></i>
                             </button>
                         </div>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 flex-1" x-text="card.description"></p>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 flex-1 line-clamp-2" x-text="card.description" :title="card.description"></p>
                         <div class="flex flex-wrap gap-2 mb-4">
                             <template x-for="tag in card.tags" :key="tag">
                                 <span
